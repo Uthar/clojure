@@ -434,12 +434,13 @@ by default when a new command-line REPL is started."} repl-requires
                           (catch LispReader$ReaderException e
                             (throw (ex-info nil {:clojure.error/phase :read-source} e))))]
              (or (#{request-prompt request-exit} input)
-                 (let [value (binding [*read-eval* read-eval] (eval input))]
+                 (multiple-value-bind [& values] (binding [*read-eval* read-eval] (eval input))
                    (set! *3 *2)
                    (set! *2 *1)
-                   (set! *1 value)
+                   (set! *1 (first values))
                    (try
-                     (print value)
+                     (doseq [value values]
+                       (print value))
                      (catch Throwable e
                        (throw (ex-info nil {:clojure.error/phase :print-eval-result} e)))))))
            (catch Throwable e

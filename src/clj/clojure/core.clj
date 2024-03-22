@@ -2058,6 +2058,24 @@
          (clojure.lang.Var/resetThreadBindingFrame frame)
          (apply f x y z args)))))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Values ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(def ^{:private false :dynamic true} *values*)
+
+(defmacro values [primary & more]
+  `(do
+     (when (bound? #'*values*)
+       (set! *values* ~(vec more)))
+     ~primary))
+
+(defmacro multiple-value-bind [bindings values-form & body]
+  `(binding [*values* clojure.lang.PersistentVector/EMPTY]
+     (let [~bindings `[~~values-form ~@*values*]]
+       ~@body)))
+
+(defmacro ignore-errors [& body]
+  `(try (do ~@body) (catch Exception e# (values nil e#))))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Refs ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defn ^{:private true}
   setup-reference [^clojure.lang.ARef r options]

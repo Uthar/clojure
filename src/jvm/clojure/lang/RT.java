@@ -2170,14 +2170,6 @@ static public ISeq doFormat(Writer w, String s, ISeq args) throws IOException{
 }
 ///////////////////////////////// values //////////////////////////
 
-static public Object[] setValues(Object... vals){
-	//ThreadLocalData.setValues(vals);
-	if(vals.length > 0)
-		return vals;//[0];
-	return null;
-}
-
-
 static public ClassLoader makeClassLoader(){
 	return (ClassLoader) AccessController.doPrivileged(new PrivilegedAction(){
 		public Object run(){
