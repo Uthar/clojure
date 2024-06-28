@@ -1512,9 +1512,9 @@
    :inline-arities #{2 3}
    :added "1.0"}
   ([map key]
-   (. clojure.lang.RT (get map key)))
+   (values (. clojure.lang.RT (get map key)) (contains? map key))
   ([map key not-found]
-   (. clojure.lang.RT (get map key not-found))))
+   (values (. clojure.lang.RT (get map key not-found)) (contains? map key)))))
 
 (defn dissoc
   "dissoc[iate]. Returns a new map of the same (hashed/sorted) type,
